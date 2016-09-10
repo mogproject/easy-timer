@@ -1,6 +1,13 @@
 import sys
 from setuptools import setup, find_packages
 
+try:
+    # Work around a traceback on Python < 2.7.4 and < 3.3.1
+    # http://bugs.python.org/issue15881#msg170215
+    import multiprocessing  # unused
+except ImportError:
+    pass
+
 SRC_DIR = 'src'
 
 

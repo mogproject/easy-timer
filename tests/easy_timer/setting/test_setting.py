@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import division, print_function, absolute_import, unicode_literals
 
 import os
@@ -29,6 +28,15 @@ class TestSetting(TestCase):
 
         if old:
             os.environ['LANG'] = old
+
+    def test_find_i18n(self):
+        import easy_timer.view.i18n.messages_en
+        import easy_timer.view.i18n.messages_ja
+
+        s = Setting()
+        self.assertEqual(s._find_i18n(None), easy_timer.view.i18n.messages_en)
+        self.assertEqual(s._find_i18n('ja_JP.UTF-8'), easy_timer.view.i18n.messages_ja)
+        self.assertEqual(s._find_i18n('C'), easy_timer.view.i18n.messages_en)
 
     def test_parse_args(self):
         self.maxDiff = None

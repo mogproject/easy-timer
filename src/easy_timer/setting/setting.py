@@ -7,7 +7,6 @@ import re
 from mog_commons.case_class import CaseClass
 from mog_commons.functional import oget
 from mog_commons.types import *
-from mog_commons import command
 
 from easy_timer.setting import arg_parser
 
@@ -42,26 +41,6 @@ class Setting(CaseClass):
             ('stderr', oget(stderr, sys.stderr))
         )
 
-    @staticmethod
-    def _find_lang():
-        # environment LANG is the first priority
-        lang = os.environ.get('LANG')
-
-        if not lang:
-            lang = locale.getdefaultlocale()[0]
-        return lang
-
-    @staticmethod
-    def _find_i18n(lang):
-        from easy_timer import i18n
-
-        if not lang:
-            return i18n.messages_en
-        elif lang.lower().startswith('ja'):
-            return i18n.messages_ja
-        else:
-            return i18n.messages_en
-
     def parse_args(self, argv):
         option, args = arg_parser.parser.parse_args(argv[1:])
         timer_sec = None
@@ -76,17 +55,25 @@ class Setting(CaseClass):
 
         return self.copy(say_enabled=option.say_enabled, say_cmd=option.say_cmd, timer_sec=timer_sec, lang=option.lang)
 
-    def verify_say_command(self):
-        """Test if "say" command works correctly."""
+    @staticmethod
+    def _find_lang():
+        # environment LANG is the first priority
+        lang = os.environ.get('LANG')
 
-        if self.say_enabled:
-            ret = command.execute_command(self.say_cmd + ' .',
-                                          shell=True, stdin=self.stdin, stdout=self.stdout, stderr=self.stderr)
-            if ret != 0:
-                self.stdout.write('\nError: "say" command is not working correctly.\n')
-                arg_parser.parser.exit(2)
+        if not lang:
+            lang = locale.getdefaultlocale()[0]
+        return lang
 
-        return self
+    @staticmethod
+    def _find_i18n(lang):
+        from easy_timer.view import i18n
+
+        if not lang:
+            return i18n.messages_en
+        elif lang.lower().startswith('ja'):
+            return i18n.messages_ja
+        else:
+            return i18n.messages_en
 
     @staticmethod
     @types(Option(int), time_spec=String)
