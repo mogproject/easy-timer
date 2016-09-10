@@ -65,6 +65,7 @@ target/
 
 # Test resources
 !/tests/resources/*
+/tests/resources/.DS_Store
 
 # pyenv
 .python-version
