@@ -48,7 +48,7 @@ Dependencies
 Quickstart
 ----------
 
-You can now try Easy Timer by typing only two command lines.
+You can now try Easy Timer by typing two command lines.
 
 ::
 
