@@ -22,7 +22,6 @@ class TestSetting(TestCase):
 
         if old:
             del os.environ['LANG']
-        self.assertEqual(s._find_lang(), None)
         s._find_lang()  # return value depends on the system
 
         os.environ['LANG'] = 'en_US'
@@ -36,25 +35,25 @@ class TestSetting(TestCase):
 
         s = Setting(say_cmd='say', say_countdown_sec=10, say_periodic_min=10, say_specific_min=[1, 5])
 
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'0']), s.copy(timer_sec=0, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'1']), s.copy(timer_sec=60, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'2']), s.copy(timer_sec=120, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'03']), s.copy(timer_sec=180, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'003']), s.copy(timer_sec=180, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'0003']), s.copy(timer_sec=180, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'9999']), s.copy(timer_sec=9999 * 60, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '0']), s.copy(timer_sec=0, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '1']), s.copy(timer_sec=60, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '2']), s.copy(timer_sec=120, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '03']), s.copy(timer_sec=180, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '003']), s.copy(timer_sec=180, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '0003']), s.copy(timer_sec=180, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '9999']), s.copy(timer_sec=9999 * 60, say_enabled=False))
 
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'0:0']), s.copy(timer_sec=0, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'0:00']), s.copy(timer_sec=0, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'0:01']), s.copy(timer_sec=1, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'0:1']), s.copy(timer_sec=1, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'1:00']), s.copy(timer_sec=60, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'02:34']), s.copy(timer_sec=154, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'002:34']), s.copy(timer_sec=154, say_enabled=False))
-        self.assertEqual(Setting().parse_args([b'easy-timer', b'0002:34']), s.copy(timer_sec=154, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '0:0']), s.copy(timer_sec=0, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '0:00']), s.copy(timer_sec=0, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '0:01']), s.copy(timer_sec=1, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '0:1']), s.copy(timer_sec=1, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '1:00']), s.copy(timer_sec=60, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '02:34']), s.copy(timer_sec=154, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '002:34']), s.copy(timer_sec=154, say_enabled=False))
+        self.assertEqual(Setting().parse_args(['easy-timer', '0002:34']), s.copy(timer_sec=154, say_enabled=False))
         self.assertEqual(
-            Setting().parse_args([b'easy-timer', b'9999:59']), s.copy(timer_sec=9999 * 60 + 59, say_enabled=False))
+            Setting().parse_args(['easy-timer', '9999:59']), s.copy(timer_sec=9999 * 60 + 59, say_enabled=False))
 
         self.assertEqual(
-            Setting().parse_args([b'easy-timer', b'-s', b'12:34']),
+            Setting().parse_args(['easy-timer', '-s', '12:34']),
             s.copy(timer_sec=12 * 60 + 34, say_enabled=True))
