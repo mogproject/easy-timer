@@ -89,7 +89,7 @@ class Setting(CaseClass):
         return self
 
     @staticmethod
-    @types(Option(int), time_spec=str)
+    @types(Option(int), time_spec=String)
     def _parse_time_spec(time_spec):
         # MMMM
         if re.compile(r"""^[0-9]{1,4}$""").match(time_spec):
