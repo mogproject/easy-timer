@@ -30,13 +30,12 @@ class TestSetting(TestCase):
             os.environ['LANG'] = old
 
     def test_find_i18n(self):
-        import easy_timer.view.i18n.messages_en
-        import easy_timer.view.i18n.messages_ja
+        from easy_timer.view import i18n
 
         s = Setting()
-        self.assertEqual(s._find_i18n(None), easy_timer.view.i18n.messages_en)
-        self.assertEqual(s._find_i18n('ja_JP.UTF-8'), easy_timer.view.i18n.messages_ja)
-        self.assertEqual(s._find_i18n('C'), easy_timer.view.i18n.messages_en)
+        self.assertEqual(s._find_i18n(None), i18n.messages_en)
+        self.assertEqual(s._find_i18n('ja_JP.UTF-8'), i18n.messages_ja)
+        self.assertEqual(s._find_i18n('C'), i18n.messages_en)
 
     def test_parse_args(self):
         self.maxDiff = None
@@ -65,3 +64,28 @@ class TestSetting(TestCase):
         self.assertEqual(
             Setting().parse_args(['easy-timer', '-s', '12:34']),
             s.copy(timer_sec=12 * 60 + 34, say_enabled=True))
+
+    def test_parse_args_error(self):
+        self.maxDiff = None
+        expect_stdout = '\n'.join([
+            'Usage: setup.py [options...] <MM> | <MM:SS>',
+            '',
+            'Options:',
+            "  --version          show program's version number and exit",
+            '  -h, --help         show this help message and exit',
+            '  -s, --say          enable spoken countdown (default: False)',
+            '  --say-cmd=SAY_CMD  set "say" command to SAY_CMD (default: say)',
+            '  --lang=LANG        set language to LANG (in RFC 1766 format)',
+            '',
+        ])
+
+        with self.withAssertOutput(expect_stdout, '') as (out, err):
+            self.assertSystemExit(2, Setting(stdout=out, stderr=err).parse_args, ['easy-timer'])
+
+    def test_parse_time_spec(self):
+        s = Setting()
+        self.assertEqual(s._parse_time_spec('a'), None)
+        self.assertEqual(s._parse_time_spec(''), None)
+        self.assertEqual(s._parse_time_spec('10000'), None)
+        self.assertEqual(s._parse_time_spec('0:60'), None)
+        self.assertEqual(s._parse_time_spec('0:99'), None)
